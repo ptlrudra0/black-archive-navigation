@@ -19,7 +19,7 @@ python backend/fusion.py
 python -m http.server --directory web 8000
 ```
 
-Output is `web/benchmark.json`. GitHub Pages hosts the static result. No Python service runs on Pages. Every data export is reproducible locally.
+Output is `web/benchmark.json`. Copy both web/index.html and web/benchmark.json to the repository root before committing a new public version. GitHub Pages hosts the root mirror (index.html and benchmark.json) from main; the canonical frontend source remains in web/. Each push to main automatically rebuilds the public page. No Python service runs on Pages. Every data export is reproducible locally.
 
 ### Limitations
 
