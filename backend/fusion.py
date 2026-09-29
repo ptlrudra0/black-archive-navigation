@@ -3,7 +3,6 @@ Not a production navigation filter: no attitude quaternion, time synchronization
 or independent ground truth. KITTI OXTS is a GPS/INS reference stream.
 """
 import json, math, pathlib, numpy as np
-from scipy.linalg import expm
 ROOT=pathlib.Path(__file__).resolve().parent
 SAMPLES=sorted(f for f in (ROOT/'data/oxts/data').glob('*.txt') if f.stem.isdigit())
 T=[x.strip() for x in (ROOT/'data/oxts/timestamps.txt').read_text().splitlines()]
@@ -14,10 +13,10 @@ lat0,lon0=D[0,:2]; R=6378137.; scale=math.cos(math.radians(lat0))
 truth=np.column_stack(((np.radians(D[:,1]-lon0))*R*scale,np.radians(D[:,0]-lat0)*R))
 # KITTI OXTS fields af (forward acceleration, index 14); wz (yaw rate, index 19);
 # yaw at index 5; vf (forward speed, index 8). KITTI development kit documents fields.
-# At 10 Hz, GNSS is artificially downsampled to 1 Hz. Outage: t=[5,11)s.
+# At 10 Hz, Position and speed updates are artificially downsampled to 1 Hz. Outage: t=[5,11)s.
 # State [E, N, speed, yaw, accelerometer bias, yaw-rate bias].
 # Prediction propagates real measured vehicle-frame acceleration and angular velocity.
-# GNSS position + OXTS forward speed update at 1 Hz outside outage.
+# OXTS position + forward speed update at 1 Hz outside outage.
 x=np.array([truth[0,0],truth[0,1],D[0,8],D[0,5],0.,0.],float)
 P=np.diag([4.,4.,1.,math.radians(3)**2,.08,.002])**2
 Q=np.diag([0.001,0.001,0.28**2,math.radians(1.5)**2,.02**2,math.radians(.06)**2])
@@ -51,7 +50,7 @@ res={
  'source': 'KITTI raw data, 2011_09_26_drive_0005_sync, OXTS',
  'source_url':'https://www.cvlibs.net/datasets/kitti/raw_data.php',
  'archive_url':'https://s3.eu-central-1.amazonaws.com/avg-kitti/raw_data/2011_09_26_drive_0005/2011_09_26_drive_0005_sync.zip',
- 'method':'2D inertial propagation from real KITTI OXTS forward acceleration and yaw rate; six-state EKF with position, speed, heading and two sensor biases. OXTS position and speed subsampled to 1 Hz for correction; positions held out from 5 to 11 seconds.',
+ 'method':'2D inertial propagation from real KITTI OXTS forward acceleration and yaw rate; six-state EKF with position, speed, heading and two sensor biases. OXTS position and speed subsampled to 1 Hz for correction; position and speed updates withheld from 5 to 11 seconds.',
  'limitations':'OXTS reference is GPS/INS-derived and not independent survey ground truth. The same OXTS stream supplies input and reference; results measure artificial 1 Hz position denial, not real receiver outages, independent accuracy, 3D navigation, 99% accuracy, or an ML model.',
  'dataset_points':N,'outage_start_s':5,'outage_end_s':11,
  'metrics':{'outage_rmse_m':round(float(np.sqrt(np.mean(error[mask]**2))),3),'outage_median_m':round(float(np.median(error[mask])),3),'outage_max_m':round(float(np.max(error[mask])),3),'outage_end_m':round(float(error[np.where(mask)[0][-1]]),3),'full_rmse_m':round(float(np.sqrt(np.mean(error**2))),3)},
