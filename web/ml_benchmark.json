@@ -1,0 +1,246 @@
+{
+  "method": "Drive-held-out ridge regression predicts the 2D local position error of open-loop inertial propagation, using only initial OXTS forward speed and observed acceleration/yaw-rate through the prediction instant.",
+  "protocol": {
+    "source": "KITTI raw OXTS, 2011_09_26 synchronized drives",
+    "drive_ids": [
+      "0005",
+      "0009",
+      "0011",
+      "0013",
+      "0014",
+      "0015",
+      "0017",
+      "0018",
+      "0019",
+      "0020",
+      "0022",
+      "0023",
+      "0027",
+      "0028",
+      "0029",
+      "0032"
+    ],
+    "drive_count": 16,
+    "stride_s": 7,
+    "outage_s": 6,
+    "ridge_alpha_candidates": [
+      100.0,
+      1000.0,
+      10000.0
+    ],
+    "ridge_alpha_selection": "nested leave-one-drive-out on training drives only",
+    "chosen_alpha_by_heldout_drive": {
+      "0005": 10000.0,
+      "0009": 10000.0,
+      "0011": 10000.0,
+      "0013": 10000.0,
+      "0014": 10000.0,
+      "0015": 10000.0,
+      "0017": 10000.0,
+      "0018": 10000.0,
+      "0019": 10000.0,
+      "0020": 10000.0,
+      "0022": 10000.0,
+      "0023": 10000.0,
+      "0027": 10000.0,
+      "0028": 10000.0,
+      "0029": 10000.0,
+      "0032": 10000.0
+    },
+    "train_test": "leave-one-entire-drive-out; no drive crosses a split",
+    "reference": "OXTS GPS/INS-derived position; not independent ground truth",
+    "features": [
+      "initial forward speed",
+      "elapsed time",
+      "prefix acceleration mean/std/integral/latest",
+      "prefix yaw-rate mean/std/integral/absolute integral/latest"
+    ]
+  },
+  "total_windows": 70,
+  "total_prediction_samples": 3990,
+  "baseline_outage_rmse_m": 0.496,
+  "ml_outage_rmse_m": 0.481,
+  "baseline_endpoint_rmse_m": 0.77,
+  "ml_endpoint_rmse_m": 0.75,
+  "per_drive": {
+    "0005": {
+      "windows": 2,
+      "samples": 114,
+      "baseline_rmse_m": 0.573,
+      "ml_rmse_m": 0.605
+    },
+    "0009": {
+      "windows": 6,
+      "samples": 342,
+      "baseline_rmse_m": 0.46,
+      "ml_rmse_m": 0.447
+    },
+    "0011": {
+      "windows": 3,
+      "samples": 171,
+      "baseline_rmse_m": 0.221,
+      "ml_rmse_m": 0.185
+    },
+    "0013": {
+      "windows": 2,
+      "samples": 114,
+      "baseline_rmse_m": 0.534,
+      "ml_rmse_m": 0.506
+    },
+    "0014": {
+      "windows": 4,
+      "samples": 228,
+      "baseline_rmse_m": 0.293,
+      "ml_rmse_m": 0.307
+    },
+    "0015": {
+      "windows": 4,
+      "samples": 228,
+      "baseline_rmse_m": 0.142,
+      "ml_rmse_m": 0.188
+    },
+    "0017": {
+      "windows": 1,
+      "samples": 57,
+      "baseline_rmse_m": 0.03,
+      "ml_rmse_m": 0.067
+    },
+    "0018": {
+      "windows": 3,
+      "samples": 171,
+      "baseline_rmse_m": 0.026,
+      "ml_rmse_m": 0.098
+    },
+    "0019": {
+      "windows": 7,
+      "samples": 399,
+      "baseline_rmse_m": 0.308,
+      "ml_rmse_m": 0.305
+    },
+    "0020": {
+      "windows": 1,
+      "samples": 57,
+      "baseline_rmse_m": 0.853,
+      "ml_rmse_m": 0.839
+    },
+    "0022": {
+      "windows": 11,
+      "samples": 627,
+      "baseline_rmse_m": 0.919,
+      "ml_rmse_m": 0.878
+    },
+    "0023": {
+      "windows": 7,
+      "samples": 399,
+      "baseline_rmse_m": 0.415,
+      "ml_rmse_m": 0.428
+    },
+    "0027": {
+      "windows": 2,
+      "samples": 114,
+      "baseline_rmse_m": 0.424,
+      "ml_rmse_m": 0.386
+    },
+    "0028": {
+      "windows": 6,
+      "samples": 342,
+      "baseline_rmse_m": 0.392,
+      "ml_rmse_m": 0.384
+    },
+    "0029": {
+      "windows": 6,
+      "samples": 342,
+      "baseline_rmse_m": 0.332,
+      "ml_rmse_m": 0.263
+    },
+    "0032": {
+      "windows": 5,
+      "samples": 285,
+      "baseline_rmse_m": 0.251,
+      "ml_rmse_m": 0.272
+    }
+  },
+  "drives": {
+    "0005": {
+      "samples": 154,
+      "windows": 2,
+      "duration_s": 15.8
+    },
+    "0009": {
+      "samples": 447,
+      "windows": 6,
+      "duration_s": 46.17
+    },
+    "0011": {
+      "samples": 233,
+      "windows": 3,
+      "duration_s": 24.02
+    },
+    "0013": {
+      "samples": 144,
+      "windows": 2,
+      "duration_s": 14.81
+    },
+    "0014": {
+      "samples": 314,
+      "windows": 4,
+      "duration_s": 32.41
+    },
+    "0015": {
+      "samples": 297,
+      "windows": 4,
+      "duration_s": 30.65
+    },
+    "0017": {
+      "samples": 114,
+      "windows": 1,
+      "duration_s": 11.7
+    },
+    "0018": {
+      "samples": 270,
+      "windows": 3,
+      "duration_s": 27.87
+    },
+    "0019": {
+      "samples": 481,
+      "windows": 7,
+      "duration_s": 49.72
+    },
+    "0020": {
+      "samples": 86,
+      "windows": 1,
+      "duration_s": 8.8
+    },
+    "0022": {
+      "samples": 800,
+      "windows": 11,
+      "duration_s": 82.77
+    },
+    "0023": {
+      "samples": 474,
+      "windows": 7,
+      "duration_s": 49.02
+    },
+    "0027": {
+      "samples": 188,
+      "windows": 2,
+      "duration_s": 19.37
+    },
+    "0028": {
+      "samples": 430,
+      "windows": 6,
+      "duration_s": 44.43
+    },
+    "0029": {
+      "samples": 430,
+      "windows": 6,
+      "duration_s": 44.46
+    },
+    "0032": {
+      "samples": 390,
+      "windows": 5,
+      "duration_s": 40.31
+    }
+  },
+  "limitations": "Synthetic position denial on KITTI OXTS; start speed/yaw/position and reference come from GPS/INS-derived OXTS, not independent survey truth. It is an offline vehicle-mounted-sensor experiment and does not establish real GNSS-outage accuracy or handheld-phone performance. The paired baseline is open-loop inertial propagation, not the separately published 1.371 m Kalman-filter run; its split and initialization differ. ML predictions are evaluated out of drive, but training and evaluation share the KITTI domain."
+}
