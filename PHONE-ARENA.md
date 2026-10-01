@@ -12,3 +12,5 @@ Failure simulations: denied sensors, relative-only heading, tilted compass, stal
 Sources: W3C orientation-event specification; MDN acceleration, absolute orientation, coordinate frame and geolocation accuracy pages. Full replay tests are in tests/phone-fusion.test.cjs.
 
 V19, October 1: user requested longer gaps. Research/demo limit is now 20 seconds with LOW CONFIDENCE past 8 seconds, visible growing illustrative radius, and eventual hold. The gap test runs 25 seconds. Neither limit nor radius is a field-validated accuracy guarantee. Previously delivered pitch video describes the old 8-second build.
+
+V20 accuracy work: selected recent level-compass alignment + full tilt rotation and learned constant-bias correction. Rejected using GNSS travel course as device orientation and walking steps for the observed vehicle-speed run. Native multisensor odometry remains the stronger route for arbitrary handheld orientation. Browser tilt-frame stability is unvalidated.
