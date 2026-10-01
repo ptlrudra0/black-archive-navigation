@@ -12,3 +12,5 @@
 .method-detail summary{cursor:pointer;color:#c5b28f;font:10px var(--mono);padding:8px 0 4px}.method-detail .note{margin:10px 0}.method-detail[open]{max-height:32dvh;overflow-y:auto}.sheet .details{margin-top:20px}.message{max-width:660px}
 
 .gap-summary{font:11px var(--mono);color:#e3c49a;margin:10px 0 0;line-height:1.4}.gap-summary[hidden]{display:none}
+
+.accuracy-summary{font:11px var(--mono);color:#d9c9ad;margin:10px 0 0;line-height:1.4}.accuracy-summary[hidden]{display:none}
