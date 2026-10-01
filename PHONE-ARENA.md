@@ -10,3 +10,5 @@ UI candidates: automotive HUD; aviation instrument; hiking compass; editorial ma
 Failure simulations: denied sensors, relative-only heading, tilted compass, stale motion, stale GPS timestamp, impossible speed, accuracy loss, phone jerk, hidden tab, long outage, no initial velocity, reset, no internet. Every prediction remains labeled estimated. No 99% claim or vehicle RMSE on the phone view. Field validation remains necessary.
 
 Sources: W3C orientation-event specification; MDN acceleration, absolute orientation, coordinate frame and geolocation accuracy pages. Full replay tests are in tests/phone-fusion.test.cjs.
+
+V19, October 1: user requested longer gaps. Research/demo limit is now 20 seconds with LOW CONFIDENCE past 8 seconds, visible growing illustrative radius, and eventual hold. The gap test runs 25 seconds. Neither limit nor radius is a field-validated accuracy guarantee. Previously delivered pitch video describes the old 8-second build.
