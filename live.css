@@ -10,3 +10,5 @@
 .sensor-readiness{display:flex;flex-wrap:wrap;gap:8px 22px;color:#c5b28f;font:10px var(--mono);line-height:1.6;margin:0 0 15px}.sheet h1{font-weight:400;letter-spacing:-.055em}.buttons button{font-weight:500;letter-spacing:-.015em;min-height:50px}.buttons .primary{padding-inline:22px}.more{color:#d7bd93;font-size:11px;letter-spacing:.035em}.active .sheet .eyebrow{letter-spacing:.08em}.note{max-width:760px}.details strong{font-variant-numeric:tabular-nums}.speed{font-variant-numeric:tabular-nums}.sensor-readiness span{min-width:0}@media(max-width:600px){.sensor-readiness{font-size:9px}.active .sheet .eyebrow{font-size:10px}.details{grid-template-columns:1fr 1fr}.details>div:last-child{grid-column:1/-1}}
 
 .method-detail summary{cursor:pointer;color:#c5b28f;font:10px var(--mono);padding:8px 0 4px}.method-detail .note{margin:10px 0}.method-detail[open]{max-height:32dvh;overflow-y:auto}.sheet .details{margin-top:20px}.message{max-width:660px}
+
+.gap-summary{font:11px var(--mono);color:#e3c49a;margin:10px 0 0;line-height:1.4}.gap-summary[hidden]{display:none}
