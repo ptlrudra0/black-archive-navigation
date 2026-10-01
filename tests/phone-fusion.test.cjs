@@ -8,7 +8,7 @@ test('GNSS correction reduces covariance',()=>{const a=new Axis(0,0,5),before=a.
 test('relative orientation rejected',()=>{const c=new Core();assert.equal(c.orient({alpha:0,beta:0,gamma:0,absolute:false},1000),false)});
 test('tilted Safari compass rejected',()=>{const c=new Core();assert.equal(c.orient({alpha:0,beta:70,gamma:0,webkitCompassHeading:0,webkitCompassAccuracy:10},1000),false)});
 test('level Safari compass accepted',()=>{const c=new Core();assert(c.orient({alpha:0,beta:0,gamma:0,webkitCompassHeading:0,webkitCompassAccuracy:10},1000))});
-test('invalid fixes rejected',()=>{const c=new Core();assert.equal(c.fix({...coords(),latitude:NaN},1000),false);assert.equal(c.fix({...coords(),accuracy:500},1000),false)});
+test('invalid fixes rejected',()=>{const c=new Core();assert.equal(c.fix({...coords(),latitude:NaN},1000),false);assert.equal(c.fix({...coords(),accuracy:50000},1000),false)});
 test('missing initial velocity holds position',()=>{const c=new Core();c.fix({...coords(),speed:null,heading:null},1000);for(let t=1100;t<4000;t+=100)c.predict(t);assert.equal(c.position(4000).mode,'held');assert.equal(c.axes[0].p,0)});
 test('stale fix cannot rewind state',()=>{const c=new Core();c.fix(coords(),2000);assert.equal(c.fix(coords(),1000),false)});
 test('inertial stream changes estimate',()=>{const c=new Core();c.fix(coords(0),1000);for(let t=1010;t<=5000;t+=10){c.orient({alpha:0,beta:0,gamma:0,absolute:true},t);c.motion({x:1,y:0,z:0},{},t)}assert(c.axes[0].p>7.9);assert.equal(c.position(5000).mode,'inertial')});
@@ -18,4 +18,7 @@ test('hidden tab prevents integration',()=>{const c=new Core();c.fix(coords(),10
 test('online bias learns from past GNSS targets only',()=>{const c=new Core();c.fix(coords(),1000);for(let j=1;j<=30;j++){for(let k=1;k<=100;k++){const t=1000+(j-1)*1000+k*10;c.orient({alpha:0,beta:0,gamma:0,absolute:true},t);c.motion({x:.2,y:0,z:0},{},t)}c.fix(coords(),1000+j*1000)}assert(c.learnedWindows>=12);assert(c.bias[0]>.1&&c.bias[0]<.2);c.reset();assert.equal(c.learnedWindows,0)});
 test('timer coasting advances without motion samples',()=>{const c=new Core();c.fix(coords(),1000);c.predict(2000);assert(c.axes[1].p>0)});
 test('accurate separated fixes initialize missing velocity',()=>{const c=new Core();c.fix({...coords(),speed:null,heading:null},1000);c.fix({...coords(),latitude:19+.0002,speed:null,heading:null},3000);assert(c.velocityKnown)});
+test('walking without speed initializes over multiple fixes',()=>{const c=new Core();for(let i=0;i<14;i++)c.fix({...coords(),latitude:19+i*1.4/111319,speed:null,heading:null},1000+i*1000);assert(c.velocityKnown);assert(c.axes[1].p>12)});
+test('fresh GPS follows when velocity is missing',()=>{const c=new Core();for(let i=0;i<8;i++)c.fix({...coords(),latitude:19+i/111319,speed:null,heading:null},1000+i*1000);assert(Math.abs(c.axes[1].p-7)<.1)});
+test('coarse fix is shown but never dead reckoned',()=>{const c=new Core();assert(c.fix({...coords(),accuracy:250},1000));c.predict(2000);assert.equal(c.mode,'held');assert(c.position(2000).radius>=250)});
 console.log(JSON.stringify({passed:count,kind:'synthetic unit/replay tests, not physical phone accuracy'}));
