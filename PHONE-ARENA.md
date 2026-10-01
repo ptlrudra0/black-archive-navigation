@@ -14,3 +14,5 @@ Sources: W3C orientation-event specification; MDN acceleration, absolute orienta
 V19, October 1: user requested longer gaps. Research/demo limit is now 20 seconds with LOW CONFIDENCE past 8 seconds, visible growing illustrative radius, and eventual hold. The gap test runs 25 seconds. Neither limit nor radius is a field-validated accuracy guarantee. Previously delivered pitch video describes the old 8-second build.
 
 V20 accuracy work: selected recent level-compass alignment + full tilt rotation and learned constant-bias correction. Rejected using GNSS travel course as device orientation and walking steps for the observed vehicle-speed run. Native multisensor odometry remains the stronger route for arbitrary handheld orientation. Browser tilt-frame stability is unvalidated.
+
+V21: live screen shows phone-reported GPS radius vs illustrative model radius, not true error. First-order causal 120ms horizontal acceleration smoothing and 250ms settling after acceleration/rotation rejection address constructed vibration/shock cases. phone-road-benchmark.cjs is a deterministic synthetic vehicle disturbance test, not measured India-road performance.
