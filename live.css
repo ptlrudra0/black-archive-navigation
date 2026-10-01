@@ -5,3 +5,8 @@
 
 /* Warm metal controls; keep active map mode restrained. */
 .sheet{border-top:0}.buttons .primary:not(.stop){background:linear-gradient(135deg,#e0c69e,#c6a36f);box-shadow:0 0 28px #d3b48218;color:#0d0b07}.buttons button{transition:background .35s,transform .35s,border-color .35s}.buttons button:hover:not(:disabled){border-color:#d3b482}.buttons .primary.stop,.active .buttons .primary{background:#171511;box-shadow:none;color:#f4ede2}.active .buttons .secondary{background:#d3b482;box-shadow:0 0 22px #d3b48212}.foot a{color:#dbc39c}
+
+/* Field typography: quieter metadata, deliberate touch controls. */
+.sensor-readiness{display:flex;flex-wrap:wrap;gap:8px 22px;color:#c5b28f;font:10px var(--mono);line-height:1.6;margin:0 0 15px}.sheet h1{font-weight:400;letter-spacing:-.055em}.buttons button{font-weight:500;letter-spacing:-.015em;min-height:50px}.buttons .primary{padding-inline:22px}.more{color:#d7bd93;font-size:11px;letter-spacing:.035em}.active .sheet .eyebrow{letter-spacing:.08em}.note{max-width:760px}.details strong{font-variant-numeric:tabular-nums}.speed{font-variant-numeric:tabular-nums}.sensor-readiness span{min-width:0}@media(max-width:600px){.sensor-readiness{font-size:9px}.active .sheet .eyebrow{font-size:10px}.details{grid-template-columns:1fr 1fr}.details>div:last-child{grid-column:1/-1}}
+
+.method-detail summary{cursor:pointer;color:#c5b28f;font:10px var(--mono);padding:8px 0 4px}.method-detail .note{margin:10px 0}.method-detail[open]{max-height:32dvh;overflow-y:auto}.sheet .details{margin-top:20px}.message{max-width:660px}
