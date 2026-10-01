@@ -34,7 +34,7 @@ See [`DESIGN-DIRECTION.md`](DESIGN-DIRECTION.md) for reference deconstruction, c
 
 A regularized constant-bias learner fits integrated acceleration minus observed GNSS velocity change over past valid intervals. It activates after 12 qualifying windows, is clamped and resets with every session. This is online calibration, not a pretrained phone-location network, and its performance is unmeasured on real phones. No KITTI weights enter the phone code.
 
-During a GNSS gap, usable inertial data supports a short estimate; otherwise the last known velocity coasts. All estimates stop by 8 seconds. Without reliable velocity, the last position is held. The uncertainty circle is model-based and not certified accuracy. Backgrounding stops integration. Browser sensor behavior, compass bias, handheld movement and GNSS noise remain important limitations. A simulation button withholds callbacks for 15 seconds and demonstrates the hold; it is not satellite loss.
+During a GNSS gap, usable inertial data supports a short estimate; otherwise the last known velocity coasts. All estimates stop by 20 seconds. Without reliable velocity, the last position is held. The uncertainty circle is model-based and not certified accuracy. Backgrounding stops integration. Browser sensor behavior, compass bias, handheld movement and GNSS noise remain important limitations. A simulation button withholds callbacks for 25 seconds and demonstrates the hold; it is not satellite loss.
 
 Session data and learned parameters stay in memory. No route is uploaded or saved. OpenStreetMap tile requests reveal the viewed map area; tiles need internet. Open HTTPS in Safari/Chrome, tap Start and allow location plus motion/orientation prompts. Keep the phone stable, near level on Safari, outdoors and foreground. This is not turn guidance or a safety-critical navigation tool.
 
@@ -48,3 +48,5 @@ To reproduce, download OXTS-only files for the drive IDs in `ml_benchmark.json` 
 
 ## v17 field-test fixes
 Fresh GNSS follows directly when velocity is unavailable, rather than covariance collapsing around the first fix. Missing speed/course walking velocity uses a separated anchor across up to 20 seconds, not adjacent one-second displacements. Coarse location is shown with its reported uncertainty but never propagated. Error codes, denied permissions and callback counts are visible in Details; errors open Details automatically. Cached samples older than 15 seconds are rejected with a reason. Asset query versions force a fresh v17 script load. Physical device failure still needs a user screenshot/phone-browser report.
+
+V19, October 1: user requested longer gaps. Research/demo limit is now 20 seconds with LOW CONFIDENCE past 8 seconds, visible growing illustrative radius, and eventual hold. The gap test runs 25 seconds. Neither limit nor radius is a field-validated accuracy guarantee. Previously delivered pitch video describes the old 8-second build.
