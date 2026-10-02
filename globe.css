@@ -1,4 +1,4 @@
-:root{--accent:#d3b482;--ink:#f4f4f6;--muted:#a9abb5;--mono:'IBM Plex Mono',monospace}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+:root{--accent:#dbaa55;--ink:#f4f4f6;--muted:#a9abb5;--mono:'IBM Plex Mono',monospace}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--ink);font-family:'Space Grotesk',sans-serif}
 #globe{position:fixed;inset:0}#globe .cesium-widget,#globe canvas{width:100%;height:100%}.cesium-widget-credits{position:fixed!important;right:6px;top:8px;bottom:auto!important;opacity:.45;font-size:9px;max-width:40vw}.cesium-widget-credits a{color:var(--muted)!important}
 canvas{transition:filter .6s ease}
 .look-night canvas{filter:grayscale(1) sepia(1) saturate(1.8) brightness(.9) contrast(1.25)}
