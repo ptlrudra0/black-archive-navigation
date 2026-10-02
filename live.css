@@ -14,3 +14,11 @@
 .gap-summary{font:11px var(--mono);color:#e3c49a;margin:10px 0 0;line-height:1.4}.gap-summary[hidden]{display:none}
 
 .accuracy-summary{font:11px var(--mono);color:#d9c9ad;margin:10px 0 0;line-height:1.4}.accuracy-summary[hidden]{display:none}
+
+.looks{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;align-items:center}.looks .label{margin-right:8px}.looks button{border:0;background:transparent;color:var(--muted);font:11px var(--mono);padding:8px 8px;min-height:40px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase}.looks button[aria-pressed=true]{color:var(--accent)}
+.look-night .leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.5) contrast(1.35) sepia(1) saturate(1.6) hue-rotate(-8deg)}
+.look-thermal .leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.78) contrast(2.4) sepia(1) saturate(3) hue-rotate(-22deg)}
+.look-scan .leaflet-tile-pane{filter:grayscale(1) invert(1) brightness(.5) contrast(1.2)}
+.look-scan .map-vignette{background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.leaflet-tile-pane{transition:filter .6s ease}
+@media (prefers-reduced-motion:reduce){.leaflet-tile-pane{transition:none}}
