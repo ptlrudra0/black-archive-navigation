@@ -1,0 +1,14 @@
+:root{--accent:#d3b482;--ink:#f4f4f6;--muted:#a9abb5;--mono:'IBM Plex Mono',monospace}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#000;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+#globe{position:fixed;inset:0}#globe .cesium-widget,#globe canvas{width:100%;height:100%}.cesium-widget-credits{position:fixed!important;right:6px;top:8px;bottom:auto!important;opacity:.45;font-size:9px;max-width:40vw}.cesium-widget-credits a{color:var(--muted)!important}
+canvas{transition:filter .6s ease}
+.look-night canvas{filter:grayscale(1) sepia(1) saturate(1.8) brightness(.9) contrast(1.25)}
+.look-thermal canvas{filter:grayscale(1) invert(1) contrast(2.2) brightness(.75) sepia(1) saturate(3) hue-rotate(-22deg)}
+.look-crt canvas{filter:grayscale(1) sepia(1) saturate(1.5) contrast(1.3) brightness(.95) blur(.35px)}
+.scan{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .6s;background:repeating-linear-gradient(0deg,rgba(0,0,0,.3) 0 1px,transparent 1px 3px);box-shadow:inset 0 0 120px rgba(0,0,0,.8)}.look-crt .scan{opacity:1}
+header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top)) 18px 24px;background:linear-gradient(#000c,transparent);font:11px var(--mono);letter-spacing:.12em;pointer-events:none}header a{color:var(--ink);text-decoration:none;pointer-events:auto;min-height:40px;display:flex;align-items:center;gap:8px}header i{font-style:normal;color:var(--accent)}
+footer{position:fixed;left:0;right:0;bottom:0;padding:34px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#000 55%)}
+#line{margin:0 0 6px;font:12px var(--mono);color:var(--ink);min-height:18px;letter-spacing:.04em}
+nav{display:flex;flex-wrap:wrap;gap:2px 4px;align-items:center}nav span{font:10px var(--mono);color:var(--muted);width:60px;letter-spacing:.1em}
+button{border:0;background:transparent;color:var(--muted);font:11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:8px 8px;min-height:40px;cursor:pointer}button[aria-pressed=true]{color:var(--accent)}#more{margin-left:auto;color:var(--ink)}
+#extra{margin-top:4px}#extra[hidden]{display:none}.note{font:10px/1.6 var(--mono);color:var(--muted);margin:8px 0 0;max-width:60ch}
+.pulse{animation:none}@media (prefers-reduced-motion:reduce){canvas,.scan{transition:none}}
