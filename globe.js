@@ -1,0 +1,59 @@
+'use strict';
+/* Black Archive globe. Layer registry, camera verbs (orbit/track/cockpit/tour) and switchable looks follow ideas
+   from gods-eye-view (MIT). No code, data or assets copied. Data: USGS, CelesTrak, NASA EONET, adsb.lol. */
+const $=id=>document.getElementById(id),Cz=Cesium,ACC=Cz.Color.fromCssColorString('#d3b482'),WHITE=Cz.Color.fromCssColorString('#f4f4f6');
+const viewer=new Cz.Viewer('globe',{baseLayer:false,baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,animation:false,timeline:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,requestRenderMode:false,skyBox:false,skyAtmosphere:false,contextOptions:{webgl:{alpha:false}}});
+viewer.scene.backgroundColor=Cz.Color.BLACK;viewer.scene.globe.baseColor=Cz.Color.fromCssColorString('#050505');viewer.scene.globe.showGroundAtmosphere=false;viewer.scene.sun&&(viewer.scene.sun.show=false);viewer.scene.moon&&(viewer.scene.moon.show=false);viewer.scene.fog.enabled=false;
+Cz.TileMapServiceImageryProvider.fromUrl(Cz.buildModuleUrl('Assets/Textures/NaturalEarthII')).then(p=>{const l=viewer.imageryLayers.addImageryProvider(p);l.brightness=.7;l.saturation=.15;l.contrast=1.15}).catch(()=>say('Base imagery failed to load'));
+viewer.camera.setView({destination:Cz.Cartesian3.fromDegrees(78,20,2.2e7)});
+const H=(a,b)=>{const f1=a[0]*Math.PI/180,f2=b[0]*Math.PI/180,dl=(b[1]-a[1])*Math.PI/180;return Math.atan2(Math.sin(dl)*Math.cos(f2),Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl))};
+function say(t){$('line').textContent=t}
+/* layer registry: each layer owns a data source, a refresher and a count */
+const layers={};
+function addLayer(id,on,refresh,every){const ds=new Cz.CustomDataSource(id);viewer.dataSources.add(ds);ds.show=on;layers[id]={ds,on,count:0,note:'',refresh,every,timer:null};if(on)start(id)}
+function start(id){const L=layers[id];if(L.timer||!L.refresh)return;const run=async()=>{try{await L.refresh(L);L.note=''}catch(e){L.note='unavailable'}status()};run();L.timer=setInterval(run,L.every)}
+function stop(id){const L=layers[id];clearInterval(L.timer);L.timer=null}
+function status(){if(viewer._sel)return;say(satStat||'Loading NavIC and GPS orbital elements')}
+let biggest=null;
+/* satellites: CelesTrak elements propagated with satellite.js (SGP4) */
+let sats=[];
+const GROUPS=[['irnss','NavIC'],['gps-ops','GPS']];
+addLayer('sats',true,async L=>{if(sats.length)return;L.ds.entities.removeAll();for(const[g,sys]of GROUPS){const j=await (await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP='+g+'&FORMAT=json')).json();for(const o of j){try{const rec=satellite.json2satrec(o);const navic=sys==='NavIC';const e=L.ds.entities.add({name:o.OBJECT_NAME.trim(),position:Cz.Cartesian3.fromDegrees(0,0,2e7),point:{pixelSize:navic?7:4,color:navic?ACC:WHITE,disableDepthTestDistance:Number.POSITIVE_INFINITY},_kind:'sat',_info:sys+' · modelled from orbital elements, epoch '+o.EPOCH.slice(0,10)});sats.push({rec,e,sys,h:0,vis:false})}catch(x){}}}L.count=sats.length;stepSats()},86400000);
+function satLL(rec,d){const pv=satellite.propagate(rec,d);if(!pv||!pv.position)return null;const g=satellite.eciToGeodetic(pv.position,satellite.gstime(d));return[satellite.degreesLat(g.latitude),satellite.degreesLong(g.longitude),g.height*1000]}
+let links=[];
+function gnssLost(){return Date.now()<gapUntil||(youE&&fusion.position(Date.now())&&fusion.position(Date.now()).age>=3)}
+function stepSats(){const d=new Date();const obs=youE&&youLL?{longitude:youLL[1]*Math.PI/180,latitude:youLL[0]*Math.PI/180,height:0}:null,gm=satellite.gstime(d);let nv={NavIC:0,GPS:0};links.forEach(l=>viewer.entities.remove(l));links=[];const lost=gnssLost();for(const s of sats){const a=satLL(s.rec,d),b=satLL(s.rec,new Date(d.getTime()+1000));if(!a||!b)continue;s.h=H(a,b);const pos=Cz.Cartesian3.fromDegrees(a[1],a[0],a[2]);s.e.position=pos;s.vis=false;if(obs){const pv=satellite.propagate(s.rec,d);if(pv&&pv.position){const el=satellite.ecfToLookAngles(obs,satellite.eciToEcf(pv.position,gm)).elevation*180/Math.PI;if(el>5){s.vis=true;nv[s.sys]++;if(!lost){links.push(viewer.entities.add({polyline:{positions:[Cz.Cartesian3.fromDegrees(youLL[1],youLL[0],0),pos],width:1,material:(s.sys==='NavIC'?ACC:WHITE).withAlpha(s.sys==='NavIC'?.55:.2)}}))}}}}}
+ satStat=obs?(lost?'GNSS LINKS LOST · dead reckoning active':`IN VIEW (modelled) NavIC ${nv.NavIC} · GPS ${nv.GPS}`):'Locate to see which satellites you can hear';if(!viewer._sel)say(satStat)}
+let satStat='',youLL=null;
+setInterval(()=>{if(layers.sats.on)stepSats()},1000);
+/* you: GNSS plus the V21 dead-reckoning filter */
+const fusion=new PhoneFusion.Core();let youE=null,youR=null,watch=null,gapUntil=0,pending=null;
+addLayer('you',true,null,0);
+function onFix(p){if(Date.now()<gapUntil){pending=p;return}fusion.fix(p.coords,p.timestamp)}
+function locate(){if(!navigator.geolocation){say('Location is not available in this browser');return}if(watch!==null)return;say('Asking for location');watch=navigator.geolocation.watchPosition(onFix,e=>{say('Location '+(e.code===1?'denied':'unavailable'));watch=null},{enableHighAccuracy:true,maximumAge:0,timeout:20000})}
+let flownYou=false;
+setInterval(()=>{if(watch===null||!layers.you.on)return;const now=Date.now();fusion.predict(now);const p=fusion.position(now);if(!p)return;const[lat,lon]=p.point,pos=Cz.Cartesian3.fromDegrees(lon,lat,0);if(!youE){youE=layers.you.ds.entities.add({name:'You',position:pos,point:{pixelSize:9,color:WHITE,outlineColor:ACC,outlineWidth:2,disableDepthTestDistance:Number.POSITIVE_INFINITY},ellipse:{semiMajorAxis:new Cz.CallbackProperty(()=>youR||10,false),semiMinorAxis:new Cz.CallbackProperty(()=>youR||10,false),material:ACC.withAlpha(.12),outline:true,outlineColor:ACC.withAlpha(.6),height:0},_kind:'you',_h:0})}youE.position=pos;youLL=[lat,lon];youR=Math.max(p.radius,10);youE._h=0;youE._info=(p.age<3?'GNSS':p.age<=Cz.defaultValue(PhoneFusion.MAX_GAP_SECONDS,20)?(p.age>8?'LOW CONFIDENCE':'ESTIMATE'):'HELD')+` · ${(p.speed*3.6).toFixed(0)} km/h · phone-reported or model radius ${Math.round(p.radius)} m`;layers.you.count=1;if(!flownYou){flownYou=true;flyTo(lon,lat,6e3,4)}if(viewer._sel===youE)say('YOU · '+youE._info)},500);
+$('locate').onclick=()=>{locate();$('locate').setAttribute('aria-pressed','true')};
+$('gap').onclick=()=>{if(watch===null)locate();gapUntil=Date.now()+25000;say('Simulated 25 s GPS gap: GNSS ignored, estimate coasts');setTimeout(()=>{if(pending){fusion.fix(pending.coords,pending.timestamp);pending=null}},25100)};
+/* selection, camera verbs */
+let mode='orbit',hd=0;
+viewer.selectedEntityChanged.addEventListener(e=>{viewer._sel=e||null;if(e){say((e.name||'').toUpperCase()+' · '+(e._info||''));if(e._kind==='sat')trail(e);else clearTrail()}else{clearTrail();status();if(mode!=='orbit')setMode('orbit')}});
+let trailE=null;function clearTrail(){if(trailE){viewer.entities.remove(trailE);trailE=null}}
+function trail(e){clearTrail();const s=sats.find(x=>x.e===e);if(!s)return;const pts=[],t=Date.now();for(let i=0;i<=95;i++){const a=satLL(s.rec,new Date(t+i*60000));if(a)pts.push(Cz.Cartesian3.fromDegrees(a[1],a[0],a[2]))}trailE=viewer.entities.add({polyline:{positions:pts,width:1,material:ACC.withAlpha(.7)}})}
+function selPos(){const e=viewer._sel;return e&&e.position?e.position.getValue(viewer.clock.currentTime):null}
+function selHeading(){const e=viewer._sel;if(!e)return 0;if(e._kind==='sat'){const s=sats.find(x=>x.e===e);return s?s.h:0}return e._h||0}
+viewer.clock.onTick.addEventListener(()=>{const pos=selPos();if(!pos)return;if(mode==='track'){hd+=.002;const sat=viewer._sel._kind==='sat';viewer.camera.lookAt(pos,new Cz.HeadingPitchRange(hd,-.6,sat?3e6:viewer._sel._kind==='you'?1500:8e5))}else if(mode==='cockpit'){viewer.camera.lookAtTransform(Cz.Matrix4.IDENTITY);const c=Cz.Cartographic.fromCartesian(pos),up=viewer._sel._kind==='sat'||viewer._sel._kind==='air'?0:2500;viewer.camera.setView({destination:Cz.Cartesian3.fromRadians(c.longitude,c.latitude,c.height+up),orientation:{heading:selHeading(),pitch:-.3,roll:0}})}});
+function flyTo(lon,lat,h,dur,heading=0,pitch=-Cz.Math.PI_OVER_TWO){return new Promise(r=>{viewer.camera.lookAtTransform(Cz.Matrix4.IDENTITY);viewer.camera.flyTo({destination:Cz.Cartesian3.fromDegrees(lon,lat,h),orientation:{heading,pitch,roll:0},duration:dur,easingFunction:Cz.EasingFunction.CUBIC_IN_OUT,complete:r,cancel:r})})}
+let tourId=0;const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function tour(){const id=++tourId;const live=()=>id===tourId&&mode==='tour';const stops=[async()=>{say('NAVIC AND GPS, MODELLED FROM PUBLIC ORBITS');await flyTo(78,15,3.2e7,4)},async()=>{say('SIGNALS FROM SPACE');await flyTo(78,12,2.2e7,5,0,-1.35)},async()=>{if(youE){const p=youE.position.getValue(viewer.clock.currentTime),c=Cz.Cartographic.fromCartesian(p);say(satStat);await flyTo(Cz.Math.toDegrees(c.longitude),Cz.Math.toDegrees(c.latitude),2e6,5,0,-1.3)}else say('Locate me, then run the tour again')},async()=>{if(youE){if(!gnssLost()){gapUntil=Date.now()+25000;setTimeout(()=>{if(pending){fusion.fix(pending.coords,pending.timestamp);pending=null}},25100)}say('GNSS LOST · the estimate coasts, uncertainty grows');const c=Cz.Cartographic.fromCartesian(youE.position.getValue(viewer.clock.currentTime));await flyTo(Cz.Math.toDegrees(c.longitude),Cz.Math.toDegrees(c.latitude),4e3,5,0,-1.2)}}];while(live()){for(const s of stops){if(!live())break;await s();if(live())await sleep(3500)}}if(id===tourId&&mode==='tour')setMode('orbit')}
+function setMode(m){const prev=mode;if(m===prev&&m!=='orbit'){m='orbit'}if(['track','cockpit'].includes(m)&&!viewer._sel){say('Tap something on the globe first, then choose '+m.toUpperCase());return}mode=m;tourId++;if(m==='orbit'||m==='tour')viewer.camera.lookAtTransform(Cz.Matrix4.IDENTITY);document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===m)));if(m==='tour')tour();else if(m==='orbit'&&!viewer._sel)status()}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+/* looks */
+function setLook(n){['optical','night','thermal','crt'].forEach(l=>document.body.classList.toggle('look-'+l,l===n));document.querySelectorAll('[data-look]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.look===n)));try{localStorage.setItem('ba-globe-look',n)}catch(e){}}
+document.querySelectorAll('[data-look]').forEach(b=>b.onclick=()=>setLook(b.dataset.look));try{setLook(localStorage.getItem('ba-globe-look')||'optical')}catch(e){setLook('optical')}
+/* layer toggles */
+document.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{const id=b.dataset.layer,L=layers[id];L.on=!L.on;L.ds.show=L.on;b.setAttribute('aria-pressed',String(L.on));if(L.on)start(id);else stop(id);if(id==='you'&&L.on&&watch===null&&youE===null){}status()});
+/* annotations: pins at screen centre */
+let pinN=0,pins=[];$('pin').onclick=()=>{const c=viewer.scene.canvas,p=viewer.camera.pickEllipsoid(new Cz.Cartesian2(c.clientWidth/2,c.clientHeight/2));if(!p){say('Point the globe at the surface to drop a pin');return}const g=Cz.Cartographic.fromCartesian(p),lat=Cz.Math.toDegrees(g.latitude),lon=Cz.Math.toDegrees(g.longitude);pins.push(viewer.entities.add({name:'PIN '+(++pinN),position:p,point:{pixelSize:7,color:ACC,disableDepthTestDistance:Number.POSITIVE_INFINITY},label:{text:'PIN '+pinN,font:'11px IBM Plex Mono',fillColor:ACC,style:Cz.LabelStyle.FILL,pixelOffset:new Cz.Cartesian2(0,-16),disableDepthTestDistance:Number.POSITIVE_INFINITY},_kind:'pin',_info:`${lat.toFixed(4)}, ${lon.toFixed(4)} · this session only`}));say(`PIN ${pinN} · ${lat.toFixed(3)}, ${lon.toFixed(3)} · not saved`)};
+$('clearpins').onclick=()=>{pins.forEach(p=>viewer.entities.remove(p));pins=[];pinN=0;say('Pins cleared')};
+$('more').onclick=()=>{const x=$('extra'),o=x.hidden;x.hidden=!o;$('more').setAttribute('aria-expanded',String(o))};
