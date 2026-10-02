@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><meta name="description" content="Live public-data globe: quakes, satellites, natural events, aircraft and a dead-reckoning position estimate."><title>Globe / Black Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Widgets/widgets.css">
+<link rel="stylesheet" href="./globe.css?v=1"></head><body class="look-optical">
+<div id="globe" aria-label="Interactive 3D globe"></div><div class="scan" aria-hidden="true"></div>
+<header><a href="./" aria-label="Back to Black Archive">← <span>BLACK ARCHIVE</span></a><i>GNSS CONTEXT</i></header>
+<footer>
+<p id="line" role="status">Loading public layers</p>
+<nav id="modes" aria-label="Camera"><button data-mode="orbit" aria-pressed="true">Orbit</button><button data-mode="track" aria-pressed="false">Track</button><button data-mode="cockpit" aria-pressed="false">Cockpit</button><button data-mode="tour" aria-pressed="false">Tour</button><button id="more" aria-expanded="false">More</button></nav>
+<div id="extra" hidden>
+<nav aria-label="Layers"><span>LAYERS</span><button data-layer="sats" aria-pressed="true">Satellites</button><button data-layer="you" aria-pressed="true">You</button></nav>
+<nav aria-label="Look"><span>LOOK</span><button data-look="optical" aria-pressed="true">Optical</button><button data-look="night" aria-pressed="false">Night</button><button data-look="thermal" aria-pressed="false">Thermal</button><button data-look="crt" aria-pressed="false">CRT</button></nav>
+<nav aria-label="Tools"><span>TOOLS</span><button id="pin">Pin</button><button id="clearpins">Clear pins</button><button id="locate">Locate me</button><button id="gap">Test 25s gap</button></nav>
+<p class="note">NavIC (IRNSS) and GPS positions are modelled from public CelesTrak orbital elements with SGP4, not tracked live. Satellites counted as in view are above 5 degrees elevation from your reported position, an illustration of which signals you could hear. Your marker uses the same GNSS-plus-velocity dead-reckoning filter as Live mode and holds after 20 seconds. Imagery: NASA Natural Earth II via CesiumJS (Apache-2.0). Not for navigation. Camera and look patterns inspired by gods-eye-view (MIT).</p>
+</div></footer>
+<script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/';</script>
+<script src="https://cdn.jsdelivr.net/npm/cesium@1.119.0/Build/Cesium/Cesium.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/satellite.js@6.0.1/dist/satellite.min.js"></script>
+<script src="./phone-fusion.js?v=21"></script><script src="./globe.js?v=1"></script></body></html>
