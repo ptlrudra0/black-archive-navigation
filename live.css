@@ -23,3 +23,4 @@
 .leaflet-tile-pane{transition:filter .6s ease}
 @media (prefers-reduced-motion:reduce){.leaflet-tile-pane{transition:none}}
 .buttons .primary,.active .buttons .secondary{background:linear-gradient(165deg,#f6df9f 0%,#e5b95f 30%,#cb9331 66%,#a06c1f 100%);border-color:#efcc7c;color:#1b1206;box-shadow:inset 0 1px 0 #fff3cc99,inset 0 -1px 0 #7a4e1255}.buttons .primary:active,.active .buttons .secondary:active{filter:brightness(.93)}
+.buttons .primary{padding:8px 8px 8px 22px}.buttons .primary span,.buttons .primary .ico{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#050505;color:#dbaa55;font-size:16px;line-height:1;box-shadow:inset 0 2px 5px #000000cc,0 1px 0 #ffeebb88}
