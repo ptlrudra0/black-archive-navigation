@@ -54,3 +54,8 @@ V19, October 1: user requested longer gaps. Research/demo limit is now 20 second
 V20: level-compass anchor aligns Safari relative yaw for up to 60s, full Z-X-Y rotation handles subsequent tilt. This assumes browser yaw-frame stability and needs device validation. Bias regression regularization reduced from 10 to 2 after 12 qualifying windows. Controlled synthetic benchmark is phone-bias-benchmark.cjs; exact GNSS, 60s calibration, 15s gap. Not real-phone accuracy.
 
 V21: live screen shows phone-reported GPS radius vs illustrative model radius, not true error. First-order causal 120ms horizontal acceleration smoothing and 250ms settling after acceleration/rotation rejection address constructed vibration/shock cases. phone-road-benchmark.cjs is a deterministic synthetic vehicle disturbance test, not measured India-road performance.
+
+
+## Map looks and credits (v22)
+
+Live mode has four map looks (Optical, Night, Thermal, Scan) in the Details area and eased camera flights on first fix and recenter. The idea of switchable sensor-style looks and layers as registered modules was inspired by gods-eye-view (https://github.com/bilawalsidhu/gods-eye-view, MIT). No code, data feeds or assets were copied. The looks are our own CSS filters over OpenStreetMap tiles, tinted to the single Black Archive accent. They change appearance only and do not affect positioning.
