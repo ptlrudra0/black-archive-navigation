@@ -59,3 +59,9 @@ V21: live screen shows phone-reported GPS radius vs illustrative model radius, n
 ## Map looks and credits (v22)
 
 Live mode has four map looks (Optical, Night, Thermal, Scan) in the Details area and eased camera flights on first fix and recenter. The idea of switchable sensor-style looks and layers as registered modules was inspired by gods-eye-view (https://github.com/bilawalsidhu/gods-eye-view, MIT). No code, data feeds or assets were copied. The looks are our own CSS filters over OpenStreetMap tiles, tinted to the single Black Archive accent. They change appearance only and do not affect positioning.
+
+## Site motion and globe (v23)
+
+The overview page uses a masked word reveal on headlines and a sticky method column whose lit step follows the scroll. The behaviour is inspired by Componentry's kinetic-text-reveal and sticky-scroll-cards (https://componentry.dev, MIT, Harsh Jadhav). It is re-implemented in vanilla JS and CSS; no Componentry source is copied, and the site stays a static GitHub Pages build. Motion is off under reduced-motion settings.
+
+`globe.html` shows NavIC and GPS satellites propagated from public CelesTrak orbital elements (modelled, not tracked), the count above 5 degrees elevation from your reported position, and the same dead-reckoning filter coasting through a simulated GNSS gap. Imagery: NASA Natural Earth II via CesiumJS (Apache-2.0).
