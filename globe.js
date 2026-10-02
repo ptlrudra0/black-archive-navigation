@@ -1,7 +1,7 @@
 'use strict';
 /* Black Archive globe. Layer registry, camera verbs (orbit/track/cockpit/tour) and switchable looks follow ideas
    from gods-eye-view (MIT). No code, data or assets copied. Data: USGS, CelesTrak, NASA EONET, adsb.lol. */
-const $=id=>document.getElementById(id),Cz=Cesium,ACC=Cz.Color.fromCssColorString('#d3b482'),WHITE=Cz.Color.fromCssColorString('#f4f4f6');
+const $=id=>document.getElementById(id),Cz=Cesium,ACC=Cz.Color.fromCssColorString('#dbaa55'),WHITE=Cz.Color.fromCssColorString('#f4f4f6');
 const viewer=new Cz.Viewer('globe',{baseLayer:false,baseLayerPicker:false,geocoder:false,homeButton:false,sceneModePicker:false,navigationHelpButton:false,animation:false,timeline:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,requestRenderMode:false,skyBox:false,skyAtmosphere:false,contextOptions:{webgl:{alpha:false}}});
 viewer.scene.backgroundColor=Cz.Color.BLACK;viewer.scene.globe.baseColor=Cz.Color.fromCssColorString('#050505');viewer.scene.globe.showGroundAtmosphere=false;viewer.scene.sun&&(viewer.scene.sun.show=false);viewer.scene.moon&&(viewer.scene.moon.show=false);viewer.scene.fog.enabled=false;
 Cz.TileMapServiceImageryProvider.fromUrl(Cz.buildModuleUrl('Assets/Textures/NaturalEarthII')).then(p=>{const l=viewer.imageryLayers.addImageryProvider(p);l.brightness=.7;l.saturation=.15;l.contrast=1.15}).catch(()=>say('Base imagery failed to load'));
