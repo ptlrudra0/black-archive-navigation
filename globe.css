@@ -12,3 +12,4 @@ nav{display:flex;flex-wrap:wrap;gap:2px 4px;align-items:center}nav span{font:10p
 button{border:0;background:transparent;color:var(--muted);font:11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:8px 8px;min-height:40px;cursor:pointer}button[aria-pressed=true]{color:var(--accent)}#more{margin-left:auto;color:var(--ink)}
 #extra{margin-top:4px}#extra[hidden]{display:none}.note{font:10px/1.6 var(--mono);color:var(--muted);margin:8px 0 0;max-width:60ch}
 .pulse{animation:none}@media (prefers-reduced-motion:reduce){canvas,.scan{transition:none}}
+header i{color:var(--muted)}
